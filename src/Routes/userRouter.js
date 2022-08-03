@@ -1,6 +1,6 @@
 
 // Funções
-import { CreateUser } from '../Controllers/userController.js';
+import { CreateUser, loginUser } from '../Controllers/userController.js';
 
 // Auxiliares
 import { Router } from 'express'
@@ -8,6 +8,6 @@ import { Router } from 'express'
 const server = Router()
 
 server.post('/signup', CreateUser)
-// server.post()
+server.post('/signin', loginUser)
 
 export default server;
