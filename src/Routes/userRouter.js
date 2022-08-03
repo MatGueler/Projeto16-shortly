@@ -7,7 +7,7 @@ import { Router } from 'express'
 
 const server = Router()
 
-server.get('/signup', CreateUser)
+server.post('/signup', CreateUser)
 // server.post()
 
 export default server;
