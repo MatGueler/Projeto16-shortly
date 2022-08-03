@@ -22,7 +22,7 @@ export async function CreateUser(req, res) {
         if (validation.error || difPassword) {
             let err;
             if (difPassword) {
-                err = "as senhas devem ser iguais"
+                err = "The passwords must be the same"
             }
             else {
                 err = validation.error.details[0].message
