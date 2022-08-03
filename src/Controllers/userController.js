@@ -3,18 +3,34 @@ import joi from 'joi'
 
 export async function CreateUser(req, res) {
 
+    const { rows: users } = await connection.query('SELECT * FROM users')
 
     try {
         const { name, email, password, confirmPassword } = req.body
 
+        const difPassword = password !== confirmPassword
+
         const userSchema = joi.object({
             name: joi.string().required(),
-            email: joi.string().required(),
+            email: joi.string().email().required(),
             password: joi.string().min(8).required(),
-            confirmPassword: joi.string().required(),
+            confirmPassword: joi.string().min(8).required(),
         });
 
-        return res.send(200)
+        const validation = userSchema.validate({ name, email, password, confirmPassword }, { abortEarly: true });
+
+        if (validation.error || difPassword) {
+            let err;
+            if (difPassword) {
+                err = "as senhas devem ser iguais"
+            }
+            else {
+                err = validation.error.details[0].message
+            }
+            return res.status(422).send(err)
+        }
+
+        return res.send(201)
     }
     catch {
         return res.send(500)
