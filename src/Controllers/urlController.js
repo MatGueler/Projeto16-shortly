@@ -1,15 +1,19 @@
 import connection from '../dbStrategy/postgres.js'
 import joi from 'joi'
 
-export async function EncodeUrl(req, res) {
+export async function EncodeUrl(req, res, next) {
 
-    const { authorization } = req.headers
+    try {
+        const { id } = res.locals.dados
+        const url = res.locals.url
 
-    const body = req.body
+        console.log(id)
+        return res.send(200)
+    }
+    catch {
+        return res.send(500)
+    }
 
-    const token = authorization?.replace('Bearer ', '')
-
-    return res.send(token)
 
     // try {
     //     const { email, password } = req.body
