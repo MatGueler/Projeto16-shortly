@@ -10,7 +10,7 @@ export async function rankingUsers(req, res) {
             JOIN "shortUrls" su ON v."shortUrlId"=su.id
             JOIN users ON su."userId"=users.id
             GROUP BY users.name,users.id
-            ORDER BY "visitCount" DESC`)
+            ORDER BY "visitCount" DESC LIMIT 10`)
 
         return res.status(200).send(ranking)
     }
