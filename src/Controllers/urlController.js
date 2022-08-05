@@ -142,11 +142,15 @@ export async function OpenUrl(req, res) {
             VALUES ($1)`
                 , [shortUrlId]);
 
-            const { rows: numberViews } = await connection.query(`SELECT COUNT(v."shortUrlId") as viewsNumber FROM visits v
+            const { rows: views } = await connection.query(`SELECT COUNT(v."shortUrlId") as viewsNumber FROM visits v
             WHERE v."shortUrlId"=($1)`
                 , [shortUrlId]);
 
-            console.log(numberViews)
+            const numberViews = views[0].viewsnumber
+
+            await connection.query(`UPDATE views SET view = $1 
+            WHERE views."shortUrlId" = $2`
+                , [numberViews, shortUrlId]);
 
             return res.send(200)
         }
