@@ -18,7 +18,7 @@ server.use(userRouter)
 
 server.use(urlRouter)
 
-// server.use(rankingRoter)
+server.use(rankingRoter)
 
 server.listen(process.env.PORT, () => {
     console.log("Server running on port " + process.env.PORT);
