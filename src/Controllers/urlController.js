@@ -137,6 +137,7 @@ export async function OpenUrl(req, res) {
         if (existUrl) {
 
             const shortUrlId = myShortUrl[0].id
+            const url = myShortUrl[0].url
 
             await connection.query(`INSERT INTO visits ("shortUrlId") 
             VALUES ($1)`
@@ -152,7 +153,7 @@ export async function OpenUrl(req, res) {
             WHERE views."shortUrlId" = $2`
                 , [numberViews, shortUrlId]);
 
-            return res.send(200)
+            return res.redirect(url)
         }
         else {
             return res.send(404)
