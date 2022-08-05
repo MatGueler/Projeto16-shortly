@@ -68,6 +68,12 @@ export async function EncodeUrl(req, res) {
             WHERE "urlId"=$1 AND "userId"=$2`
                     , [urlId, id])
 
+            const shortUrlId = myShortUrl[0].id
+
+            await connection.query(`INSERT INTO views ("shortUrlId") 
+            VALUES ($1)`
+                , [shortUrlId]);
+
             shortUrl = myShortUrl[0].shortUrl
         }
         else {
@@ -135,6 +141,12 @@ export async function OpenUrl(req, res) {
             await connection.query(`INSERT INTO visits ("shortUrlId") 
             VALUES ($1)`
                 , [shortUrlId]);
+
+            const { rows: numberViews } = await connection.query(`SELECT COUNT(v."shortUrlId") as viewsNumber FROM visits v
+            WHERE v."shortUrlId"=($1)`
+                , [shortUrlId]);
+
+            console.log(numberViews)
 
             return res.send(200)
         }
