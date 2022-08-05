@@ -6,7 +6,8 @@ export async function EncodeUrl(req, res) {
 
     try {
         const { id } = res.locals.dados
-        const url = res.locals.url
+
+        const { url } = req.body
 
         let shortUrl;
 
@@ -47,6 +48,8 @@ export async function EncodeUrl(req, res) {
         else {
             urlId = myUrl[0].id
         }
+
+        console.log({ urlId, id })
 
         const { rows: myShortUrl } = await connection.query
             (`SELECT * FROM "shortUrls"
@@ -159,6 +162,37 @@ export async function OpenUrl(req, res) {
             return res.send(404)
         }
 
+    }
+    catch {
+        return res.send(500)
+    }
+
+}
+
+export async function userUrls(req, res) {
+
+    try {
+
+        const idUser = res.locals.dados.id
+
+        const { rows: user } = await connection.query
+            (`SELECT users.id,users.name,SUM(v.view) AS "visitCount" FROM views v
+            JOIN "shortUrls" su ON v."shortUrlId"=su.id
+            JOIN users ON su."userId"=users.id
+            WHERE su."userId"=$1
+            GROUP BY users.name,users.id`
+                , [idUser])
+
+        const { rows: shortUrls } = await connection.query
+            (`SELECT su.id,su."shortUrl",urls.url,views.view AS "visitCount" FROM "shortUrls" su
+            JOIN urls ON urls.id=su."urlId"
+            JOIN views ON views."shortUrlId"=su.id
+            WHERE su."userId"=$1`
+                , [idUser])
+
+        const body = { ...user[0], shortenedUrls: shortUrls }
+
+        return res.status(200).send(body)
     }
     catch {
         return res.send(500)

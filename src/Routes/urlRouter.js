@@ -1,6 +1,6 @@
 
 // Funções
-import { EncodeUrl, ShowUrl, OpenUrl } from '../Controllers/urlController.js';
+import { EncodeUrl, ShowUrl, OpenUrl, userUrls } from '../Controllers/urlController.js';
 import validateUser from '../Middlewares/validateUser.js'
 
 // Auxiliares
@@ -11,5 +11,6 @@ const server = Router()
 server.post('/urls/shorten', validateUser, EncodeUrl)
 server.get('/urls/:id', ShowUrl)
 server.get('/urls/open/:shortUrl', OpenUrl)
+server.get('/users/me', validateUser, userUrls)
 
 export default server;
