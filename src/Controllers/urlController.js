@@ -113,3 +113,38 @@ export async function ShowUrl(req, res) {
     }
 
 }
+
+export async function OpenUrl(req, res) {
+
+    try {
+
+        const { shortUrl } = req.params;
+
+        const { rows: myShortUrl } = await connection.query
+            (`SELECT "shortUrls".id,"shortUrls"."shortUrl",urls.url FROM "shortUrls"
+            JOIN urls ON urls.id = "shortUrls"."urlId"
+            WHERE "shortUrls"."shortUrl"=$1`
+                , [shortUrl])
+
+        const existUrl = myShortUrl.length !== 0
+
+        if (existUrl) {
+
+            const shortUrlId = myShortUrl[0].id
+
+            await connection.query(`INSERT INTO visits ("shortUrlId") 
+            VALUES ($1)`
+                , [shortUrlId]);
+
+            return res.send(200)
+        }
+        else {
+            return res.send(404)
+        }
+
+    }
+    catch {
+        return res.send(500)
+    }
+
+}
