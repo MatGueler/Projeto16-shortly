@@ -2,7 +2,7 @@ import connection from '../dbStrategy/postgres.js'
 import { nanoid } from 'nanoid/non-secure'
 import joi from 'joi'
 
-export async function EncodeUrl(req, res, next) {
+export async function EncodeUrl(req, res) {
 
     try {
         const { id } = res.locals.dados
@@ -79,6 +79,34 @@ export async function EncodeUrl(req, res, next) {
         }
 
         return res.status(201).send(body)
+    }
+    catch {
+        return res.send(500)
+    }
+
+}
+
+export async function ShowUrl(req, res) {
+
+    try {
+
+        const { id } = req.params;
+
+        const { rows: url } = await connection.query
+            (`SELECT "shortUrls".id,"shortUrls"."shortUrl",urls.url FROM "shortUrls"
+            JOIN urls ON urls.id = "shortUrls"."urlId"
+            WHERE "shortUrls".id=$1`
+                , [id])
+
+        const existUrl = url.length !== 0
+
+        if (existUrl) {
+            return res.status(200).send(url)
+        }
+        else {
+            return res.send(404)
+        }
+
     }
     catch {
         return res.send(500)
