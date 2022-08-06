@@ -6,11 +6,11 @@ export async function rankingUsers(req, res) {
     try {
 
         const { rows: ranking } = await connection.query
-            (`SELECT users.id,users.name,COUNT(su."shortUrl") AS "linksCount",SUM(v.view) AS "visitCount" FROM views v
-            JOIN "shortUrls" su ON v."shortUrlId"=su.id
-            JOIN users ON su."userId"=users.id
-            GROUP BY users.name,users.id
-            ORDER BY "visitCount" DESC LIMIT 10`)
+            (`SELECT users.id,users.name,COUNT(su."shortUrl") AS "linksCount",COALESCE(SUM(views.view),0) AS "visitCount" FROM  users
+            LEFT JOIN "shortUrls" su ON su."userId"=users.id
+            LEFT JOIN views ON su.id=views."shortUrlId"
+            GROUP BY users.id
+            ORDER BY "visitCount" DESC`)
 
         return res.status(200).send(ranking)
     }
