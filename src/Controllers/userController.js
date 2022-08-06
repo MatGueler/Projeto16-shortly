@@ -87,10 +87,6 @@ export async function loginUser(req, res) {
         const chaveSecreta = process.env.JWT_SECRET;
         const token = jwt.sign(dados, chaveSecreta);
 
-        await connection.query(`INSERT INTO tokens (token) 
-         VALUES ($1)`
-            , [token]);
-
         return res.send(token)
     }
     catch {
