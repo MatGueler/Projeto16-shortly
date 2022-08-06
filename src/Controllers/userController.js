@@ -55,8 +55,8 @@ export async function CreateUser(req, res) {
 export async function loginUser(req, res) {
 
     try {
-        console.log('oi')
-        return res.send('ola')
+        const body = req.body
+        return res.send(body)
     }
     catch {
         return res.send(500)
