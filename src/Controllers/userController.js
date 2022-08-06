@@ -55,7 +55,7 @@ export async function CreateUser(req, res) {
 export async function loginUser(req, res) {
 
     try {
-        const { email, password } = req.body
+        // const { email, password } = req.body
 
         // const cryptPassword = 
 
@@ -93,7 +93,7 @@ export async function loginUser(req, res) {
         // VALUES ($1)`
         //     , [token]);
 
-        return res.status(201).send(token)
+        return res.send(token)
     }
     catch {
         return res.send(500)
