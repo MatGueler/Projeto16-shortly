@@ -199,3 +199,54 @@ export async function userUrls(req, res) {
     }
 
 }
+
+export async function deleteUrl(req, res) {
+
+    try {
+
+        const { id } = req.params
+
+        const idUser = res.locals.dados.id
+
+        const { rows: isurlDel } = await connection.query
+            (`SELECT su.id,su."userId",su."shortUrl" FROM "shortUrls" su
+        WHERE su.id=$1`
+                , [id])
+
+        if (isurlDel.length === 0) {
+            return res.send(404)
+        }
+
+        const { rows: urlDel } = await connection.query
+            (`SELECT su.id,su."userId",su."shortUrl" FROM "shortUrls" su
+        WHERE su."userId"=$1 AND su.id=$2`
+                , [idUser, id])
+
+        const isMyUrl = urlDel.length !== 0;
+
+        if (isMyUrl) {
+
+            await connection.query
+                (`DELETE FROM views WHERE views."shortUrlId"= $1;`
+                    , [id])
+
+            await connection.query
+                (`DELETE FROM visits WHERE visits."shortUrlId"= $1;`
+                    , [id])
+
+            await connection.query
+                (`DELETE FROM "shortUrls" WHERE "shortUrls".id= $1;`
+                    , [id])
+
+        }
+        else {
+            return res.send(401)
+        }
+
+        return res.send(204)
+    }
+    catch {
+        return res.send(500)
+    }
+
+}
