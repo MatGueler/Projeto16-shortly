@@ -175,6 +175,8 @@ export async function userUrls(req, res) {
 
         const idUser = res.locals.dados.id
 
+        let body;
+
         const { rows: user } = await connection.query
             (`SELECT users.id,users.name,SUM(v.view) AS "visitCount" FROM views v
             JOIN "shortUrls" su ON v."shortUrlId"=su.id
@@ -190,7 +192,18 @@ export async function userUrls(req, res) {
             WHERE su."userId"=$1`
                 , [idUser])
 
-        const body = { ...user[0], shortenedUrls: shortUrls }
+        if (user.length === 0) {
+
+            const { rows: user } = await connection.query
+                (`SELECT users.id,users.name FROM  users
+            WHERE users.id=$1`
+                    , [idUser])
+
+            body = { ...user[0], visitCount: 0, shortenedUrls: [] }
+        }
+        else {
+            body = { ...user[0], shortenedUrls: shortUrls }
+        }
 
         return res.status(200).send(body)
     }
