@@ -54,8 +54,13 @@ export async function CreateUser(req, res) {
 
 export async function loginUser(req, res) {
 
-    console.log('oi')
-    return res.send('ola')
+    try {
+        console.log('oi')
+        return res.send('ola')
+    }
+    catch {
+        return res.send(500)
+    }
 
     // try {
     //     // const { email, password } = req.body
