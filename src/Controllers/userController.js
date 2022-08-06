@@ -55,8 +55,8 @@ export async function CreateUser(req, res) {
 export async function loginUser(req, res) {
 
     try {
-        const body = req.body
-        return res.send(body)
+        const { email, password } = req.body
+        return res.send(200)
     }
     catch {
         return res.send(500)
