@@ -83,7 +83,7 @@ export async function loginUser(req, res) {
             }
         }
 
-        // const dados = { id: users[0].id };
+        const dados = { id: users[0].id };
         // const chaveSecreta = process.env.JWT_SECRET;
         // const token = jwt.sign(dados, chaveSecreta);
 
