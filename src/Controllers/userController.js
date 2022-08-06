@@ -87,7 +87,7 @@ export async function loginUser(req, res) {
         const chaveSecreta = process.env.JWT_SECRET;
         const token = jwt.sign(dados, chaveSecreta);
 
-        return res.send(200)
+        return res.status(200).send(token)
     }
     catch {
         return res.send(500)
