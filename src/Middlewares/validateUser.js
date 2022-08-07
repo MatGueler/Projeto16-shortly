@@ -17,7 +17,7 @@ async function validateUser(req, res, next) {
     }
     catch {
         console.log(req.headers)
-        return res.send(401)
+        return res.send(req.headers)
     }
     next();
 
