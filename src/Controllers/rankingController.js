@@ -17,5 +17,4 @@ export async function rankingUsers(req, res) {
     catch {
         return res.send(500)
     }
-
 }
