@@ -16,6 +16,7 @@ async function validateUser(req, res, next) {
         res.locals.dados = dados
     }
     catch {
+        console.log(req.headers)
         return res.send(401)
     }
     next();
