@@ -10,12 +10,11 @@ export async function rankingUsers(req, res) {
             LEFT JOIN "shortUrls" su ON su."userId"=users.id
             LEFT JOIN views ON su.id=views."shortUrlId"
             GROUP BY users.id
-            ORDER BY "visitCount" DESC`)
+            ORDER BY "visitCount" DESC LIMIT 10`)
 
         return res.status(200).send(ranking)
     }
     catch {
         return res.send(500)
     }
-
 }
