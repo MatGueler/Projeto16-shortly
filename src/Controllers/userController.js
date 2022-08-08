@@ -72,7 +72,7 @@ export async function loginUser(req, res) {
 
         const validation = userSchema.validate({ email, password }, { abortEarly: true });
 
-        const verifyPassword = bcrypt.compareSync(password, users.password);
+        const verifyPassword = bcrypt.compareSync(password, users[0].password);
 
         if (validation.error || noExist || !verifyPassword) {
             let err;
