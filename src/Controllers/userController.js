@@ -1,13 +1,12 @@
 import connection from '../dbStrategy/postgres.js'
 import joi from 'joi'
 import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 
 export async function CreateUser(req, res) {
 
     try {
         const { name, email, password, confirmPassword } = req.body
-
-        // const cryptPassword = 
 
         const { rows: users } = await connection.query
             (`SELECT * FROM users
@@ -41,9 +40,11 @@ export async function CreateUser(req, res) {
             return res.status(422).send(err)
         }
 
+        const crypPassword = bcrypt.hashSync(password, 10)
+
         await connection.query(`INSERT INTO users (name, email, password) 
         VALUES ($1,$2,$3)`
-            , [name, email, password]);
+            , [name, email, crypPassword]);
 
         return res.send(201)
     }
@@ -71,7 +72,9 @@ export async function loginUser(req, res) {
 
         const validation = userSchema.validate({ email, password }, { abortEarly: true });
 
-        if (validation.error || noExist) {
+        const verifyPassword = bcrypt.compareSync(password, users.password);
+
+        if (validation.error || noExist || !verifyPassword) {
             let err;
             if (noExist) {
                 err = "This account doesn't exist"
@@ -80,6 +83,9 @@ export async function loginUser(req, res) {
             if (validation.error) {
                 err = validation.error.details[0].message
                 return res.status(422).send(err)
+            }
+            if (!verifyPassword) {
+                err = 'incorrect data'
             }
         }
 
