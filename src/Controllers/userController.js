@@ -86,6 +86,7 @@ export async function loginUser(req, res) {
             }
             if (!verifyPassword) {
                 err = 'incorrect data'
+                return res.status(401).send(err)
             }
         }
 
